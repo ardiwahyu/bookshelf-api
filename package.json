@@ -1,0 +1,19 @@
+{
+  "name": "bookself-api",
+  "version": "1.0.0",
+  "description": "submission backend pemula dicoding",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardiwahyu/bookshelf-api.git"
+  },
+  "author": "Wahyu Ardiansyah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ardiwahyu/bookshelf-api/issues"
+  },
+  "homepage": "https://github.com/ardiwahyu/bookshelf-api#readme"
+}
