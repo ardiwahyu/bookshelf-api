@@ -6,6 +6,7 @@ const addBookController = (request, h) => {
     const {
         name, year, author, summary, publisher, pageCount, readPage, reading
     } = request.payload;
+
     if (!name) {
         const response = h.response({
             status: errorStatus,
@@ -24,11 +25,11 @@ const addBookController = (request, h) => {
     }
 
     const id = nanoid(16);
-    const finished = pageCount == readPage;
-    const createdAt = new Date().toISOString();
-    const updatedAt = createdAt;
+    const finished = pageCount === readPage;
+    const insertedAt = new Date().toISOString();
+    const updatedAt = insertedAt;
     books.push({
-        id, name, year, author, summary, publisher, pageCount, readPage, reading, finished, createdAt, updatedAt
+        id, name, year, author, summary, publisher, pageCount, readPage, reading, finished, insertedAt, updatedAt
     });
 
     const isSuccess = books.filter((book) => book.id === id).length > 0
@@ -50,12 +51,25 @@ const addBookController = (request, h) => {
     return response;
 }
 
-const getBooksController = () => ({
-    status: successStatus,
-    data: {
-        books: JSON.parse(JSON.stringify(books, ['id', 'name', 'publisher']))
+const getBooksController = (request, h) => {
+    const { reading, finished, name } = request.query;
+    let filteredBook = books
+    if (reading) {
+        filteredBook = filteredBook.filter((b) => b.reading == (reading == 1));
     }
-});
+    if (finished) {
+        filteredBook = filteredBook.filter((b) => b.finished == (finished == 1));
+    }
+    if (name) {
+        filteredBook = filteredBook.filter((b) => b.name.toLowerCase().includes(name.toLowerCase()))
+    }
+    const response = h.response({
+        status: successStatus,
+        data: { books: JSON.parse(JSON.stringify(filteredBook, ['id', 'name', 'publisher'])) }
+    });
+    response.code(status.success);
+    return response;
+};
 
 const getDetailBookController = (request, h) => {
     const { bookId } = request.params;
@@ -115,7 +129,7 @@ const editBookController = (request, h) => {
 
     const response = h.response({
         status: errorStatus,
-        message: 'Gagal memperbarui catatan. Id tidak ditemukan'
+        message: 'Gagal memperbarui buku. Id tidak ditemukan'
     });
     response.code(status.notfound);
     return response;
